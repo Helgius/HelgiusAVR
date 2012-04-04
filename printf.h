@@ -16,6 +16,9 @@
 #ifndef __PRINTF_H__
 #define __PRINTF_H__
 
+#include <stdio.h>
+#include "HardwareSerial.h"
+
 int serial_putc( char c, FILE * ) 
 {
   Serial.write( c );

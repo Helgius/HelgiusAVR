@@ -9,10 +9,6 @@
 #ifndef SERVOTIMER_H_
 #define SERVOTIMER_H_
 
-#include <stdlib.h>
-#include <avr/io.h>
-#include <WProgram.h>
-
 enum angle_kind_t {MAX_ANGLE, MIN_ANGLE, CURRENT};
 
 class ServoTimer {

@@ -8,9 +8,9 @@
 #include <stdlib.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include <WProgram.h>
 #include "ServoTimer.h"
 #include "HardwareSerial.h"
+#include "Math.h"
 
 
 ServoTimer::ServoTimer():ServoMin(2200), ServoMax(4715), ServoMinAngle(0), ServoMaxAngle(180) {
@@ -45,10 +45,10 @@ void ServoTimer::setPosition(uint16_t position)
 	if (position > 360)
 	  OCR3A = position;
 	else
-	  OCR3A = map(position, ServoMinAngle, ServoMaxAngle, ServoMin, ServoMax);
+	  OCR3A = map_b(position, ServoMinAngle, ServoMaxAngle, ServoMin, ServoMax);
 }
 
 uint16_t ServoTimer::getAngle() const
 {
-   return map(OCR3A, ServoMin, ServoMax, ServoMinAngle, ServoMaxAngle);
+   return map_l(OCR3A, ServoMin, ServoMax, ServoMinAngle, ServoMaxAngle);
 }

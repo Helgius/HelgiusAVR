@@ -9,8 +9,8 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "PWMMotorDigitalReverse.h"
-#include "WProgram.h"
 #include "Math.h"
+
 
 PWMMotorDigitalReverse::PWMMotorDigitalReverse()
 {
