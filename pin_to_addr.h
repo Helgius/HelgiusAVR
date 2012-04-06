@@ -18,21 +18,70 @@ typedef enum {STATE_LOW=0, STATE_HIGH} port_state_enum;
 #define LOW 0
 #define HIGH 1
 
+#if defined (__AVR_ATmega640__) || defined (__AVR_ATmega1280__) || defined (__AVR_ATmega2560__)
+
 const uint16_t PROGMEM PIN_2_ADDRESS[] = {
 		0,
 		(uint16_t) &PING,
-		(uint16_t) &PINE,
-		(uint16_t) &PINE,
-		(uint16_t) &PINE
-};
+		(uint16_t) &PINE, (uint16_t) &PINE, (uint16_t) &PINE, (uint16_t) &PINE,
+		(uint16_t) &PINE, (uint16_t) &PINE,	(uint16_t) &PINE, (uint16_t) &PINE,
+		0, 0, //VCC, GND
+		(uint16_t) &PINH, (uint16_t) &PINH,	(uint16_t) &PINH, (uint16_t) &PINH,
+		(uint16_t) &PINH, (uint16_t) &PINH,	(uint16_t) &PINH,
+		(uint16_t) &PINB, (uint16_t) &PINB,	(uint16_t) &PINB, (uint16_t) &PINB,
+		(uint16_t) &PINB, (uint16_t) &PINB,	(uint16_t) &PINB, (uint16_t) &PINB,
+		(uint16_t) &PINH,
+		(uint16_t) &PING, (uint16_t) &PING,
+		0,0,0,0,0, //RESET, VCC, GND, XTAL2, XTAL1
+		(uint16_t) &PINL, (uint16_t) &PINL,	(uint16_t) &PINL, (uint16_t) &PINL,
+		(uint16_t) &PINL, (uint16_t) &PINL,	(uint16_t) &PINL, (uint16_t) &PINL,
+		(uint16_t) &PIND, (uint16_t) &PIND,	(uint16_t) &PIND, (uint16_t) &PIND,
+		(uint16_t) &PIND, (uint16_t) &PIND,	(uint16_t) &PIND, (uint16_t) &PIND,
+		(uint16_t) &PING, (uint16_t) &PING,
+		(uint16_t) &PINC, (uint16_t) &PINC,	(uint16_t) &PINC, (uint16_t) &PINC,
+		(uint16_t) &PINC, (uint16_t) &PINC,	(uint16_t) &PINC, (uint16_t) &PINC,
+		0,0, //VCC, GND
+		(uint16_t) &PINJ, (uint16_t) &PINJ,	(uint16_t) &PINJ, (uint16_t) &PINJ,
+		(uint16_t) &PINJ, (uint16_t) &PINJ,	(uint16_t) &PINJ,
+		(uint16_t) &PING,
+		(uint16_t) &PINA, (uint16_t) &PINA,	(uint16_t) &PINA, (uint16_t) &PINA,
+		(uint16_t) &PINA, (uint16_t) &PINA,	(uint16_t) &PINA, (uint16_t) &PINA,
+		(uint16_t) &PINJ,
+		0,0, //VCC, GND
+		(uint16_t) &PINK, (uint16_t) &PINK,	(uint16_t) &PINK, (uint16_t) &PINK,
+		(uint16_t) &PINK, (uint16_t) &PINK,	(uint16_t) &PINK, (uint16_t) &PINK,
+		(uint16_t) &PINF, (uint16_t) &PINF,	(uint16_t) &PINF, (uint16_t) &PINF,
+		(uint16_t) &PINF, (uint16_t) &PINF,	(uint16_t) &PINF, (uint16_t) &PINF
+	};
 
 const uint8_t PROGMEM PIN_2_MASK[] = {
-		_BV(4), _BV(0), _BV(1), _BV(2)
-};
+		_BV(4),															//PORTG
+		_BV(0), _BV(1), _BV(2), _BV(3), _BV(4), _BV(5), _BV(6), _BV(7), //PORTE
+		0,0, //VCC, GND
+		_BV(0), _BV(1), _BV(2), _BV(3), _BV(4), _BV(5), _BV(6),			//PORTH
+		_BV(0), _BV(1), _BV(2), _BV(3), _BV(4), _BV(5), _BV(6), _BV(7), //PORTB
+		_BV(7),															//PORTH
+		_BV(3), _BV(4), 												//PORTG
+		0,0,0,0,0, //RESET, VCC, GND, XTAL2, XTAL1
+		_BV(0), _BV(1), _BV(2), _BV(3), _BV(4), _BV(5), _BV(6), _BV(7), //PORTL
+		_BV(0), _BV(1), _BV(2), _BV(3), _BV(4), _BV(5), _BV(6), _BV(7), //PORTD
+		_BV(0), _BV(1), 												//PORTG
+		_BV(0), _BV(1), _BV(2), _BV(3), _BV(4), _BV(5), _BV(6), _BV(7), //PORTC
+		0,0, //VCC, GND
+		_BV(0), _BV(1), _BV(2), _BV(3), _BV(4), _BV(5), _BV(6), 		//PORTJ
+		_BV(2), 														//PORTG2
+		_BV(7), _BV(6), _BV(5), _BV(4), _BV(3), _BV(2), _BV(1), _BV(0), //PORTA
+		_BV(7), 														//PORTJ
+		0,0, //VCC, GND
+		_BV(7), _BV(6), _BV(5), _BV(4), _BV(3), _BV(2), _BV(1), _BV(0), //PORTK
+		_BV(7), _BV(6), _BV(5), _BV(4), _BV(3), _BV(2), _BV(1), _BV(0)  //PORTf
+	};
 
 #define SCK		20
 #define MOSI	21
 #define MISO	22
+
+#endif //ATmega640, ATmega1280, ATmega2560
 
 PIN_HW_INFORMATION get_pin_information(uint8_t pin_hw_number);
 void set_DDR(uint8_t pin_hw_number, io_enum mode);
