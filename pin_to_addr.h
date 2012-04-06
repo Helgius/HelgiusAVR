@@ -10,13 +10,17 @@
 
 #include <avr/io.h>
 #include <avr/pgmspace.h>
+#include <util/delay.h>
 
 struct PIN_HW_INFORMATION {uint16_t PINx; uint16_t DDRx; uint16_t PORTx; uint8_t PIN_mask;};
 typedef enum {INP_MODE=0, OUT_MODE} io_enum;
 typedef enum {STATE_LOW=0, STATE_HIGH} port_state_enum;
 
-#define LOW 0
-#define HIGH 1
+#define LOW (port_state_enum) 0
+#define HIGH (port_state_enum) 1
+
+#define INPUT (io_enum) 0
+#define OUTPUT (io_enum) 1
 
 #if defined (__AVR_ATmega640__) || defined (__AVR_ATmega1280__) || defined (__AVR_ATmega2560__)
 
@@ -55,6 +59,7 @@ const uint16_t PROGMEM PIN_2_ADDRESS[] = {
 	};
 
 const uint8_t PROGMEM PIN_2_MASK[] = {
+		0,
 		_BV(4),															//PORTG
 		_BV(0), _BV(1), _BV(2), _BV(3), _BV(4), _BV(5), _BV(6), _BV(7), //PORTE
 		0,0, //VCC, GND
@@ -117,7 +122,6 @@ const uint8_t PROGMEM PIN_2_MASK[] = {
 
 #endif //ATmega640, ATmega1280, ATmega2560
 
-PIN_HW_INFORMATION get_pin_information(uint8_t pin_hw_number);
 void set_DDR(uint8_t pin_hw_number, io_enum mode);
 void set_PORT(uint8_t pin_hw_number, port_state_enum mode);
 uint8_t get_PIN(uint8_t pin_hw_number);
