@@ -228,7 +228,7 @@ void RF24::begin(void)
 #ifdef ARDUINO
 	pinMode(ce_pin, OUTPUT);
 #else
-	set_DDR(ce_pin, OUT_MODE);
+	set_DDR(ce_pin, OUTPUT);
 #endif
 
 	ce(LOW);
