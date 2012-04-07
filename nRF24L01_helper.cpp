@@ -4,7 +4,7 @@
  *  Created on: Feb 24, 2012
  *      Author: helgius
  */
-#include "printf.h"
+
 #include "nRF24L01_hw.h"
 #include "nRF24L01_config.h"
 #include "nRF24L01.h"

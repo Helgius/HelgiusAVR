@@ -22,6 +22,7 @@
 
 #include <avr/io.h>
 #include <avr/pgmspace.h>
+#include <util/delay.h>
 
 #define SPI_CLOCK_DIV4		0x00
 #define SPI_CLOCK_DIV16		0x01
@@ -39,8 +40,6 @@
 #define SPI_MODE_MASK 0x0C  // CPOL = bit 3, CPHA = bit 2 on SPCR
 #define SPI_CLOCK_MASK 0x03  // SPR1 = bit 1, SPR0 = bit 0 on SPCR
 #define SPI_2XCLOCK_MASK 0x01  // SPI2X = bit 0 on SPSR
-
-typedef enum {SPI0=0, USART0, USART1, USART2, USART3} enum_spi_module;
 
 class SPIClass
 {

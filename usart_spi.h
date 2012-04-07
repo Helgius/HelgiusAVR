@@ -20,24 +20,37 @@
 #define UBRR(P)		(*(volatile uint16_t *)(P+4))
 #define UDR(P) 		(*(P+6))
 
-const struct UART_RES_STRUCT{uint16_t XCK_DDR; uint8_t XCK_mask; uint16_t UCSRxA;} PROGMEM UART_RESOURCES[] = {
-		{DDRE, PE2, UCSR0A},
-		{DDRD, PD5, UCSR1A},
-		{DDRH, PH2, UCSR2A},
-		{DDRJ, PJ2, UCSR3A}
-};
+#if defined (__AVR_ATmega640__) || defined (__AVR_ATmega1280__) || defined (__AVR_ATmega2560__)
+
+typedef enum {
+	USART0, USART1, USART2, USART3
+} enum_spi_module;
+
+const uint16_t PROGMEM UART_SCK_DDR[] = {(uint16_t) &DDRE, (uint16_t) &DDRD, (uint16_t) &DDRH, (uint16_t) &DDRJ};
+const uint8_t PROGMEM UART_SCK_MASK[] = {_BV(PE2), _BV(PD5), _BV(PH2), _BV(PJ2)};
+const uint16_t PROGMEM UART_UCSRA[] = {(uint16_t) &UCSR0A, (uint16_t) &UCSR1A, (uint16_t) &UCSR2A, (uint16_t) &UCSR3A};
+
+#elif defined(__AVR_ATmega328P__) || defined (__AVR_ATmega328__) || \
+		defined (__AVR_ATmega48A__) || defined (__AVR_ATmega48P__) || defined (__AVR_ATmega48PA__) || \
+		defined (__AVR_ATmega88A__) || defined (__AVR_ATmega88PA__) || defined (__AVR_ATmega88P__) || \
+		defined (__AVR_ATmega168A__) || defined (__AVR_ATmega168P__) || defined (__AVR_ATmega168PA__)
+
+typedef enum { USART0 } enum_spi_module;
+
+const uint16_t PROGMEM UART_SCK_DDR[] = {(uint16_t) &DDRD};
+const uint8_t PROGMEM UART_SCK_MASK[] = {_BV(PD4)};
+const uint16_t PROGMEM UART_UCSRA[] = {(uint16_t) &UCSR0A};
+
+#endif
 
 class USART_SPI: public SPIClass {
 private:
 	uint8_t UART_module;
 	volatile uint8_t *UCSRA;
-	volatile uint8_t *UDR;
 public:
 	USART_SPI(const enum_spi_module _module, const uint8_t _cspin) :
-			SPIClass(_cspin),UART_module(_module-1){
-		begin();
-	}
-	;
+			SPIClass(_cspin), UART_module(_module) {
+	};
 	void end();
 
 	uint8_t transfer(const uint8_t _data);

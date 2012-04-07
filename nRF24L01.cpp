@@ -51,9 +51,11 @@ uint8_t RF24::read_register(uint8_t reg, uint8_t* buf, uint8_t len)
 uint8_t RF24::read_register(uint8_t reg)
 {
 	p_spi.setCS(LOW);
-	p_spi.transfer( R_REGISTER | ( REGISTER_MASK & reg ) );
+
+    p_spi.transfer( R_REGISTER | ( REGISTER_MASK & reg ) );
 	uint8_t result = p_spi.transfer(0xff);
 	p_spi.setCS(HIGH);
+
 	return result;
 }
 
@@ -63,9 +65,11 @@ uint8_t RF24::write_register(uint8_t reg, const uint8_t* buf, uint8_t len)
 {
 	uint8_t status;
 
-	p_spi.setCS(LOW);
+    p_spi.setCS(LOW);
 	status = p_spi.transfer( W_REGISTER | ( REGISTER_MASK & reg ) );
-	while ( len-- )	p_spi.transfer(*buf++);
+	while ( len-- )	{
+	    p_spi.transfer(*buf++);
+	}
 	p_spi.setCS(HIGH);
 
 	return status;
@@ -77,9 +81,10 @@ uint8_t RF24::write_register(uint8_t reg, uint8_t value)
 {
 	uint8_t status;
 
-	p_spi.setCS(LOW);
+    p_spi.setCS(LOW);
 	status = p_spi.transfer( W_REGISTER | ( REGISTER_MASK & reg ) );
-	p_spi.transfer(value);
+
+    p_spi.transfer(value);
 	p_spi.setCS(HIGH);
 
 	return status;
@@ -213,7 +218,7 @@ void RF24::setupSPI() {
 	p_spi.begin();
 	p_spi.setBitOrder(MSBFIRST);
 	p_spi.setDataMode(SPI_MODE0);
-	p_spi.setClockDivider(SPI_CLOCK_DIV8);
+	p_spi.setClockDivider(SPI_CLOCK_DIV16);
 }
 
 void RF24::begin(void)

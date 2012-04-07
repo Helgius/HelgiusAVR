@@ -66,10 +66,6 @@ struct ring_buffer
   ring_buffer rx_buffer2  =  { { 0 }, 0, 0 };
   ring_buffer tx_buffer2  =  { { 0 }, 0, 0 };
 #endif
-#if defined(UBRR3H)
-  ring_buffer rx_buffer3  =  { { 0 }, 0, 0 };
-  ring_buffer tx_buffer3  =  { { 0 }, 0, 0 };
-#endif
 
 inline void store_char(unsigned char c, ring_buffer *buffer)
 {
@@ -146,19 +142,6 @@ inline void store_char(unsigned char c, ring_buffer *buffer)
   #error SIG_USART2_RECV
 #endif
 
-#if defined(USART3_RX_vect) && defined(UDR3)
-  void serialEvent3() __attribute__((weak));
-  void serialEvent3() {}
-  #define serialEvent3_implemented
-  SIGNAL(USART3_RX_vect)
-  {
-    unsigned char c = UDR3;
-    store_char(c, &rx_buffer3);
-  }
-#elif defined(SIG_USART3_RECV)
-  #error SIG_USART3_RECV
-#endif
-
 void serialEventRun(void)
 {
 #ifdef serialEvent_implemented
@@ -169,9 +152,6 @@ void serialEventRun(void)
 #endif
 #ifdef serialEvent2_implemented
   if (Serial2.available()) serialEvent2();
-#endif
-#ifdef serialEvent3_implemented
-  if (Serial3.available()) serialEvent3();
 #endif
 }
 
@@ -250,24 +230,6 @@ ISR(USART2_UDRE_vect)
   }
 }
 #endif
-
-#ifdef USART3_UDRE_vect
-ISR(USART3_UDRE_vect)
-{
-  if (tx_buffer3.head == tx_buffer3.tail) {
-	// Buffer empty, so disable interrupts
-	    UCSR3B &= ~_BV(UDRIE3);
-  }
-  else {
-    // There is more data in the output buffer. Send the next byte
-    unsigned char c = tx_buffer3.buffer[tx_buffer3.tail];
-    tx_buffer3.tail = (tx_buffer3.tail + 1) % SERIAL_BUFFER_SIZE;
-	
-    UDR3 = c;
-  }
-}
-#endif
-
 
 // Constructors ////////////////////////////////////////////////////////////////
 
@@ -415,9 +377,6 @@ size_t HardwareSerial::write(uint8_t c)
 #endif
 #if defined(UBRR2H)
   HardwareSerial Serial2(&rx_buffer2, &tx_buffer2, &UBRR2H, &UBRR2L, &UCSR2A, &UCSR2B, &UDR2, RXEN2, TXEN2, RXCIE2, UDRIE2, U2X2);
-#endif
-#if defined(UBRR3H)
-  HardwareSerial Serial3(&rx_buffer3, &tx_buffer3, &UBRR3H, &UBRR3L, &UCSR3A, &UCSR3B, &UDR3, RXEN3, TXEN3, RXCIE3, UDRIE3, U2X3);
 #endif
 
 #endif // whole file

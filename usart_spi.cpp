@@ -7,14 +7,15 @@
 
 #include "usart_spi.h"
 #include <avr/io.h>
+
 #ifdef ARDUINO
 	#include "Arduino.h"
 #else
 	#include "pin_to_addr.h"
 #endif
 
-	#define LSBFIRST 0
-	#define MSBFIRST 1
+#define LSBFIRST 0
+#define MSBFIRST 1
 
 /*****************************************************************************
  *  USART in SPI mode hardware realization
@@ -30,16 +31,15 @@ void USART_SPI::begin() {
 	set_PORT(p_cspin, STATE_HIGH);
 #endif
 
-	UCSRA = (volatile uint8_t *)( pgm_read_word( (UART_RESOURCES + UART_module)->UCSRxA));
-
+	UCSRA = (volatile uint8_t *) pgm_read_word(UART_UCSRA+UART_module);
 	UBRR(UCSRA)	= 0;							//Disable USART
 
 	//XCK pin output
-	volatile uint8_t* DDR = (volatile uint8_t*) pgm_read_word( (UART_RESOURCES + UART_module)->XCK_DDR );
-	*DDR	|= _BV( pgm_read_word( (UART_RESOURCES + UART_module)->XCK_mask ) );
+	volatile uint8_t* DDR = (volatile uint8_t*) pgm_read_word(UART_SCK_DDR + UART_module);
+	*DDR	|= pgm_read_byte(UART_SCK_MASK + UART_module);
 
-	UCSRC(UCSRA)		= _BV(UMSEL11)| _BV(UMSEL10);	//UCPHAn=0 UCPOLn=0 for mode0
-	UCSRB(UCSRA)		= _BV(TXEN1)| _BV(RXEN1);		//Enable USART
+	UCSRC(UCSRA)		= _BV(UMSEL11) | _BV(UMSEL10);	//UCPHAn=0 UCPOLn=0 for mode0
+	UCSRB(UCSRA)		= _BV(TXEN1) | _BV(RXEN1);		//Enable USART
 }
 
 void USART_SPI::setBitOrder(uint8_t bitOrder) {
@@ -47,7 +47,6 @@ void USART_SPI::setBitOrder(uint8_t bitOrder) {
 		UCSRC(UCSRA) |= _BV(UDORD);
 	else
 		UCSRC(UCSRA) &= ~(_BV(UDORD));
-
 }
 
 void USART_SPI::setDataMode(uint8_t mode) {
@@ -56,24 +55,23 @@ void USART_SPI::setDataMode(uint8_t mode) {
 }
 
 void USART_SPI::setClockDivider(uint8_t rate) {
-	 //Convert SPI divider to USART UBRR
+	//Convert SPI divider to USART UBRR
 	UBRR(UCSRA)	= (((4 << ((rate & 0x03) << 1)) >> ((rate & 0x04) >> 2)) >> 1) - 1;
 }
 
 uint8_t USART_SPI::transfer(uint8_t _data) {
-	while (!(*UCSRA & _BV(TXC1)))
-		; //Wait for TX finish
+	while (!(*UCSRA & _BV(UDRE1)));// Wait for TX finish
 
-	*UDR = _data;
+	UDR(UCSRA) = _data;
 
 	while (!(*UCSRA & _BV(RXC1)))
 		; //Wait for RX finish
 
-	uint8_t dat = *UDR;
+	uint8_t dat = UDR(UCSRA);
 	return dat;
 }
 
 void USART_SPI::end() {
 	//Disable USART
-	UBRR(UCSRA)	= 0;							//Disable USART
+	UBRR(UCSRA)	= 0;
 }
