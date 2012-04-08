@@ -8,6 +8,8 @@
 #ifndef IODEVICE_H_
 #define IODEVICE_H_
 
+namespace Devices {
+
 enum INT_KIND { PCINT_0=0 , PCINT_1, PCINT_2};
 
 class IODevice {
@@ -19,5 +21,7 @@ public:
 
 	virtual void PCINT(INT_KIND int_kind, uint8_t pin_data);
 };
+
+} /* namespace Devices */
 
 #endif /* IODEVICE_H_ */
