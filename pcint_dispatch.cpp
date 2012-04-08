@@ -23,15 +23,12 @@
  *
  */
 
-
-#include <stddef.h>
-#include <stdlib.h>
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include "pcint_dispatch.h"
 
 static uint8_t	p_h_allocated;
-static struct HANDLER_STRUCT {uint8_t pin_mask[MAX_PCINT_BLOCKS]; IODevice *device;}* p_handlers;
+static struct HANDLER_STRUCT {uint8_t pin_mask[MAX_PCINT_BLOCKS]; Devices::IODevice *device;}* p_handlers;
 static uint8_t	p_h_used;
 static uint8_t	p_last_pin_val[MAX_PCINT_BLOCKS];
 
@@ -45,7 +42,7 @@ PCINTDispatcher::PCINTDispatcher(uint8_t handlers_count)
 	for (uint8_t i=0;i<MAX_PCINT_BLOCKS;i++) p_last_pin_val[i] = readPINS(i);
 };
 
-const uint8_t PCINTDispatcher::attachInterrupt(int8_t _handler, uint8_t PCINT_num, IODevice *device)
+const uint8_t PCINTDispatcher::attachInterrupt(int8_t _handler, uint8_t PCINT_num, Devices::IODevice *device)
 {
 	uint8_t tmp_idx;
 
@@ -95,7 +92,7 @@ void PCINTDispatcher::PCINT_vector(uint8_t pin_block)
 
 	for (uint8_t i=0; i<p_h_used; i++) {
 		if (p_handlers[i].pin_mask[pin_block] & tmp_mask) {
-			p_handlers[i].device->PCINT((INT_KIND)pin_block, tmp_pin_val);
+			p_handlers[i].device->PCINT((Devices::INT_KIND)pin_block, tmp_pin_val);
 		}
 	}
 

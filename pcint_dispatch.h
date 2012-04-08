@@ -45,7 +45,7 @@ private:
 
 public:
 	PCINTDispatcher(uint8_t handlers_count);
-	static const uint8_t attachInterrupt(int8_t _handler, uint8_t PCINT_num, IODevice *device);
+	static const uint8_t attachInterrupt(int8_t _handler, uint8_t PCINT_num, Devices::IODevice *device);
 	static void detachInterrupt(const uint8_t handler_slot);
 	static void PCINT_vector(uint8_t pin_block);
 	static uint8_t readPINS(uint8_t pin_block);
