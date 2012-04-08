@@ -17,7 +17,7 @@ namespace Pololu {
 
 #define get_encoder_val() PINK //Arduino Analog 8,9,10,11 used on ATMEGA2560 (PORTK)
 
-class PololuEncoder: public IODevice {
+class PololuEncoder: public Devices::IODevice {
 public:
 	PololuEncoder() { init(); };
 	void init();
