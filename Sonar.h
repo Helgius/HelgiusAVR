@@ -8,11 +8,14 @@
 #ifndef SONAR_H_
 #define SONAR_H_
 
+#include <inttypes.h>
+#include "IODevice.h"
+
 namespace Devices {
 
-class Sonar: public IODevice {
+class Sonar: public Devices::IODevice {
 public:
-	Sonar() { init(); };
+	Sonar();
 	void init();
 	void PCINT(INT_KIND int_kind, uint8_t pin_data);
 };

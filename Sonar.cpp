@@ -7,19 +7,20 @@
 
 #include "Sonar.h"
 #include <avr/interrupt.h>
+#include "pcint_dispatch.h"
 
 namespace Devices {
 
 Sonar::Sonar() {
-	// TODO Auto-generated constructor stub
+	init();
 
 }
 
-void PololuEncoder::PCINT(INT_KIND int_kind, uint8_t pin_data) {
+void Sonar::PCINT(INT_KIND int_kind, uint8_t pin_data) {
 
 }
 
-void PololuEncoder::init() {
+void Sonar::init() {
 	cli();
 
 	PCINT_Handler = PCINT_dispatcher.attachInterrupt(PCINT_Handler, 0, this);
