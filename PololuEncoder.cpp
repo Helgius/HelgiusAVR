@@ -8,6 +8,9 @@
 #include <avr/interrupt.h>
 #include "pcint_dispatch.h"
 
+namespace Devices {
+namespace Pololu {
+
 volatile static uint16_t gl_m1_count;
 volatile static uint16_t gl_m2_count;
 volatile static uint8_t gl_m_status;
@@ -75,3 +78,6 @@ uint8_t PololuEncoder::get_status()
 
 	return tmp;
 }
+
+} /* namespace Pololu */
+} /* namespace Devices */

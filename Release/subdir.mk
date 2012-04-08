@@ -4,12 +4,14 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../GlobalTimer.cpp \
 ../HardwareSerial.cpp \
 ../Math.cpp \
 ../PWMMotorDigitalReverse.cpp \
 ../PololuEncoder.cpp \
 ../Print.cpp \
 ../ServoTimer.cpp \
+../Sonar.cpp \
 ../Stream.cpp \
 ../WString.cpp \
 ../cppstub.cpp \
@@ -21,12 +23,14 @@ CPP_SRCS += \
 ../usart_spi.cpp 
 
 OBJS += \
+./GlobalTimer.o \
 ./HardwareSerial.o \
 ./Math.o \
 ./PWMMotorDigitalReverse.o \
 ./PololuEncoder.o \
 ./Print.o \
 ./ServoTimer.o \
+./Sonar.o \
 ./Stream.o \
 ./WString.o \
 ./cppstub.o \
@@ -38,12 +42,14 @@ OBJS += \
 ./usart_spi.o 
 
 CPP_DEPS += \
+./GlobalTimer.d \
 ./HardwareSerial.d \
 ./Math.d \
 ./PWMMotorDigitalReverse.d \
 ./PololuEncoder.d \
 ./Print.d \
 ./ServoTimer.d \
+./Sonar.d \
 ./Stream.d \
 ./WString.d \
 ./cppstub.d \
