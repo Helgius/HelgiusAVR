@@ -14,10 +14,10 @@
 
 
 ServoTimer::ServoTimer():ServoMin(2200), ServoMax(4715), ServoMinAngle(0), ServoMaxAngle(180) {
-	SetUp();
+	init();
 }
 
-void ServoTimer::SetUp() {
+void ServoTimer::init() {
 	DDRE |= _BV(PE3);//Set PORTE3 as output ARDUINO DIGITAL-5
 
 	//Fast PWM - TOP=ICR - Clear OCnA on Compare Match, set OCnA at TOP

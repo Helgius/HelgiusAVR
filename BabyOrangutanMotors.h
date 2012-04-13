@@ -12,6 +12,11 @@ namespace Devices {
 namespace Pololu {
 
 class BabyOrangutanMotors {
+public:
+	BabyOrangutanMotors(){init();};
+
+	static void init();
+	static void SetSpeed(int16_t m_speed);
 };
 
 } /* namespace Pololu */

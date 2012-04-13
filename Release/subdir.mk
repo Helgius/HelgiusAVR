@@ -4,6 +4,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../BabyOrangutanMotors.cpp \
 ../GlobalTimer.cpp \
 ../HardwareSerial.cpp \
 ../Math.cpp \
@@ -23,6 +24,7 @@ CPP_SRCS += \
 ../usart_spi.cpp 
 
 OBJS += \
+./BabyOrangutanMotors.o \
 ./GlobalTimer.o \
 ./HardwareSerial.o \
 ./Math.o \
@@ -42,6 +44,7 @@ OBJS += \
 ./usart_spi.o 
 
 CPP_DEPS += \
+./BabyOrangutanMotors.d \
 ./GlobalTimer.d \
 ./HardwareSerial.d \
 ./Math.d \

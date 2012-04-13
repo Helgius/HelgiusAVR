@@ -22,7 +22,7 @@ public:
 
 	uint16_t getPosition();
     void setPosition(uint16_t position);
-    void SetUp();
+    void init();
 
     uint16_t getAngle() const;
 private:
