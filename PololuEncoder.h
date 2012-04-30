@@ -8,14 +8,13 @@
 #ifndef POLOLUENCODER_H_
 #define POLOLUENCODER_H_
 
-#include <avr/io.h>
 #include "IODevice.h"
 #include "pcint_dispatch.h"
 
 namespace Devices {
 namespace Pololu {
 
-#define get_encoder_val() PINK //Arduino Analog 8,9,10,11 used on ATMEGA2560 (PORTK)
+#define get_encoder_val() 0 //Arduino Analog 8,9,10,11 used on ATMEGA2560 (PORTK)
 
 class PololuEncoder: public Devices::IODevice {
 public:

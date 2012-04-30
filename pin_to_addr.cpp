@@ -5,7 +5,7 @@
  *      Author: helgius
  */
 
-
+#include <avr/pgmspace.h>
 #include "pin_to_addr.h"
 
 void set_DDR(uint8_t pin_hw_number, io_enum mode)

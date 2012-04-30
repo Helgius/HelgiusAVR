@@ -5,50 +5,60 @@
  *      Author: helgius
  */
 
-#include <stdlib.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include "ServoTimer.h"
 #include "HardwareSerial.h"
+#include "pin_to_addr.h"
 #include "Math.h"
+#include "ServoTimer.h"
 
-
-ServoTimer::ServoTimer():ServoMin(2200), ServoMax(4715), ServoMinAngle(0), ServoMaxAngle(180) {
-	init();
-}
+#ifdef ARDUINO
+	#include "Arduino.h"
+#else
+	#include "pin_to_addr.h"
+#endif
 
 void ServoTimer::init() {
-	DDRE |= _BV(PE3);//Set PORTE3 as output ARDUINO DIGITAL-5
+	TCCRA = (volatile uint8_t *) pgm_read_word(TIMER_TCCRA+TIMER_module);
+	*TCCRA	= 0;
+
+	for (uint8_t i=2;i>=0;i--) {
+		if (channel_mask && _BV(i)) {
+			*TCCRA |= COM1A1>>(i*2);
+			uint8_t PIN = TIMER_PINS[(TIMER_module*3)+i];
+			if (PIN>0) set_DDR(13, OUTPUT);//Set PORTE3 as output ARDUINO DIGITAL-5
+		}
+	}
 
 	//Fast PWM - TOP=ICR - Clear OCnA on Compare Match, set OCnA at TOP
 	//start timer with prescaler 8
-    TCCR3A	= 0;
-	ICR3	= (F_CPU/(8*50))-1; //50Hz 20ms pulse
-	TCCR3A	= _BV(COM3A1) | _BV(WGM31);
-	TCCR3B	= _BV(WGM32) | _BV(WGM33) | _BV(CS31);
-	OCR3A	= (ICR3/10)*0.75;   //Initial "center" to not to break servo
+	ICR	= (F_CPU/(8*50))-1; //50Hz 20ms pulse
+	*TCCRA	|= _BV(WGM11);
+	TCCRB	= _BV(WGM12) | _BV(WGM13) | _BV(CS11);
+	OCRA	= (ICR/10)*0.75;   //Initial "center" to not to break servo
 }
 
-/*
+
 ServoTimer::~ServoTimer() {
-s	TCCR3A = TCCR3B = 0; //Stop timer
+	*TCCRA = 0;
+	TCCRB = 0; //Stop timer
 }
-*/
+
 
 uint16_t ServoTimer::getPosition()
 {
-    return OCR3A;
+    return OCRA;
 }
 
 void ServoTimer::setPosition(uint16_t position)
 {
 	if (position > 360)
-	  OCR3A = position;
+	  OCRA = position;
 	else
-	  OCR3A = map_b(position, ServoMinAngle, ServoMaxAngle, ServoMin, ServoMax);
+	  OCRA = map_b(position, ServoMinAngle, ServoMaxAngle, ServoMin, ServoMax);
 }
 
 uint16_t ServoTimer::getAngle() const
 {
-   return map_l(OCR3A, ServoMin, ServoMax, ServoMinAngle, ServoMaxAngle);
+   return map_l(OCRA, ServoMin, ServoMax, ServoMinAngle, ServoMaxAngle);
 }

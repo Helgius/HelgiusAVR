@@ -16,7 +16,7 @@ public:
 	BabyOrangutanMotors(){init();};
 
 	static void init();
-	static void SetSpeed(int16_t m_speed);
+	static void SetSpeed(int16_t m1_speed, int16_t m2_speed);
 };
 
 } /* namespace Pololu */

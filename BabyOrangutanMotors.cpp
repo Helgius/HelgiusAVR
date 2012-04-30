@@ -66,24 +66,26 @@ void BabyOrangutanMotors::init() {
     set_PORT(1, LOW);
 }
 
-void SetSpeed(int16_t m1_speed, int16_t m2_speed) {
-		unsigned char reverse = 0;
+void BabyOrangutanMotors::SetSpeed(int16_t m1_speed, int16_t m2_speed) {
+		uint8_t m1_rev = 0;
+		uint8_t m2_rev = 0;
 
 		if (m1_speed < 0)
 		{
 			m1_speed = -m1_speed;	// make speed a positive quantity
-			reverse = 1;
+			m1_rev 	= 1;
 		}
 
 		if (m2_speed < 0)
 		{
 			m2_speed = -m2_speed;	// make speed a positive quantity
-			reverse = 1;
+			m2_rev = 1;
 		}
 
 		m1_speed = (m1_speed > 0xFF) ? 0xFF : m1_speed;
+		m2_speed = (m2_speed > 0xFF) ? 0xFF : m2_speed;
 
-		if (reverse)
+		if (m1_rev)
 		{
 			OCR0B = 0;		// hold one driver input high
 			OCR0A = m1_speed;	// pwm the other input
@@ -92,6 +94,17 @@ void SetSpeed(int16_t m1_speed, int16_t m2_speed) {
 		{
 			OCR0B = m1_speed;	// pwm one driver input
 			OCR0A = 0;		// hold the other driver input high
+		}
+
+		if (m2_rev)
+		{
+			OCR2B = 0;		// hold one driver input high
+			OCR2A = m2_speed;	// pwm the other input
+		}
+		else	// forward
+		{
+			OCR2B = m2_speed;	// pwm one driver input
+			OCR2A = 0;		// hold the other driver input high
 		}
 }
 

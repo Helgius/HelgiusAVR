@@ -17,19 +17,19 @@
 	#include "pin_to_addr.h"
 	#include "Math.h"
 	#include <util/delay.h>
-	#define delayMicroseconds(P) _delay_us(P)
-	#define delay(P) _delay_ms(P)
+	#define delayMicroseconds(P) _delay_us((P))
+	#define delay(P) _delay_ms((P))
 #endif
+
+inline void RF24::cs(const uint8_t level) {
+	set_PORT(cs_pin, (port_state_enum) level);
+};
 
 /****************************************************************************/
 
-void RF24::ce(int level)
+inline void RF24::ce(const uint8_t level)
 {
-#ifdef ARDUINO
-	digitalWrite(ce_pin,level);
-#else
 	set_PORT(ce_pin, (port_state_enum) level);
-#endif
 }
 
 /****************************************************************************/
@@ -38,10 +38,10 @@ uint8_t RF24::read_register(uint8_t reg, uint8_t* buf, uint8_t len)
 {
 	uint8_t status;
 
-	p_spi.setCS(LOW);
+	cs(LOW);
 	status = p_spi.transfer( R_REGISTER | ( REGISTER_MASK & reg ) );
 	while ( len-- )	*buf++ = p_spi.transfer(0xff);
-	p_spi.setCS(HIGH);
+	cs(HIGH);
 
 	return status;
 }
@@ -50,12 +50,12 @@ uint8_t RF24::read_register(uint8_t reg, uint8_t* buf, uint8_t len)
 
 uint8_t RF24::read_register(uint8_t reg)
 {
-	p_spi.setCS(LOW);
+	cs(LOW);
 
     p_spi.transfer( R_REGISTER | ( REGISTER_MASK & reg ) );
 	uint8_t result = p_spi.transfer(0xff);
-	p_spi.setCS(HIGH);
 
+	cs(HIGH);
 	return result;
 }
 
@@ -65,13 +65,14 @@ uint8_t RF24::write_register(uint8_t reg, const uint8_t* buf, uint8_t len)
 {
 	uint8_t status;
 
-    p_spi.setCS(LOW);
-	status = p_spi.transfer( W_REGISTER | ( REGISTER_MASK & reg ) );
+    cs(LOW);
+
+    status = p_spi.transfer( W_REGISTER | ( REGISTER_MASK & reg ) );
 	while ( len-- )	{
 	    p_spi.transfer(*buf++);
 	}
-	p_spi.setCS(HIGH);
 
+	cs(HIGH);
 	return status;
 }
 
@@ -81,12 +82,12 @@ uint8_t RF24::write_register(uint8_t reg, uint8_t value)
 {
 	uint8_t status;
 
-    p_spi.setCS(LOW);
-	status = p_spi.transfer( W_REGISTER | ( REGISTER_MASK & reg ) );
+    cs(LOW);
 
+    status = p_spi.transfer( W_REGISTER | ( REGISTER_MASK & reg ) );
     p_spi.transfer(value);
-	p_spi.setCS(HIGH);
 
+    cs(HIGH);
 	return status;
 }
 
@@ -101,14 +102,13 @@ uint8_t RF24::write_payload(const void* buf, uint8_t len)
 	uint8_t data_len = min(len,payload_size);
 	uint8_t blank_len = dynamic_payloads_enabled ? 0 : payload_size - data_len;
 
-	p_spi.setCS(LOW);
-	status = p_spi.transfer( W_TX_PAYLOAD );
-	while ( data_len-- )
-		p_spi.transfer(*current++);
-	while ( blank_len-- )
-		p_spi.transfer(0);
-	p_spi.setCS(HIGH);
+	cs(LOW);
 
+	status = p_spi.transfer( W_TX_PAYLOAD );
+	while ( data_len-- ) p_spi.transfer(*current++);
+	while ( blank_len-- ) p_spi.transfer(0);
+
+	cs(HIGH);
 	return status;
 }
 
@@ -122,13 +122,13 @@ uint8_t RF24::read_payload(void* buf, uint8_t len)
 	uint8_t data_len = min(len,payload_size);
 	uint8_t blank_len = dynamic_payloads_enabled ? 0 : payload_size - data_len;
 
-	p_spi.setCS(LOW);
+	cs(LOW);
+
 	status = p_spi.transfer( R_RX_PAYLOAD );
-	while ( data_len-- )
-		*current++ = p_spi.transfer(0xff);
-	while ( blank_len-- )
-		p_spi.transfer(0xff);
-	p_spi.setCS(HIGH);
+	while ( data_len-- ) *current++ = p_spi.transfer(0xff);
+	while ( blank_len-- ) p_spi.transfer(0xff);
+
+	cs(HIGH);
 
 	//HELGIUS temp hack
 	write_register(STATUS,_BV(RX_DR));
@@ -141,10 +141,11 @@ uint8_t RF24::flush_rx(void)
 {
 	uint8_t status;
 
-	p_spi.setCS(LOW);
-	status = p_spi.transfer( FLUSH_RX );
-	p_spi.setCS(HIGH);
+	cs(LOW);
 
+	status = p_spi.transfer( FLUSH_RX );
+
+	cs(HIGH);
 	return status;
 }
 
@@ -154,10 +155,11 @@ uint8_t RF24::flush_tx(void)
 {
 	uint8_t status;
 
-	p_spi.setCS(LOW);
-	status = p_spi.transfer( FLUSH_TX );
-	p_spi.setCS(HIGH);
+	cs(LOW);
 
+	status = p_spi.transfer( FLUSH_TX );
+
+	cs(HIGH);
 	return status;
 }
 
@@ -167,17 +169,18 @@ uint8_t RF24::get_status(void)
 {
 	uint8_t status;
 
-	p_spi.setCS(LOW);
-	status = p_spi.transfer( NOP );
-	p_spi.setCS(HIGH);
+	cs(LOW);
 
+	status = p_spi.transfer( NOP );
+
+	cs(HIGH);
 	return status;
 }
 
 /****************************************************************************/
 
-RF24::RF24(uint8_t _cepin, SPIClass& _spi):
-				ce_pin(_cepin), wide_band(true), p_variant(false),
+RF24::RF24(uint8_t _cepin, uint8_t _cspin, uint8_t _irqpin, SPIClass& _spi):
+				ce_pin(_cepin), cs_pin(_cspin), irq_pin(_irqpin), wide_band(true), p_variant(false),
 				payload_size(32), ack_payload_available(false), dynamic_payloads_enabled(false),
 				p_spi(_spi)
 {
@@ -223,16 +226,13 @@ void RF24::setupSPI() {
 
 void RF24::begin(void)
 {
+	set_DDR(cs_pin, OUT_MODE);
+	set_DDR(ce_pin, OUT_MODE);
+	cs(HIGH);
+	ce(LOW);
+
 	setupSPI();
 
-#ifdef ARDUINO
-	pinMode(ce_pin, OUTPUT);
-#else
-	set_DDR(ce_pin, OUTPUT);
-#endif
-
-	ce(LOW);
-	p_spi.setCS(HIGH);
 
 	// Must allow the radio time to settle else configuration bits will not necessarily stick.
 	// This is actually only required following power up but some settling time also appears to
@@ -240,7 +240,7 @@ void RF24::begin(void)
 	// Enabling 16b CRC is by far the most obvious case if the wrong timing is used - or skipped.
 	// Technically we require 4.5ms + 14us as a worst case. We'll just call it 5ms for good measure.
 	// WARNING: Delay is based on P-variant whereby non-P *may* require different timing.
-	delay( 5 ) ;
+	delay( 15 ) ;
 
 	// Set 1500uS (minimum for 32B payload in ESB@250KBPS) timeouts, to make testing a little easier
 	// WARNING: If this is ever lowered, either 250KBS mode with AA is broken or maximum packet
@@ -363,11 +363,12 @@ uint8_t RF24::getDynamicPayloadSize(void)
 {
 	uint8_t result = 0;
 
-	p_spi.setCS(LOW);
+	cs(LOW);
+
 	p_spi.transfer( R_RX_PL_WID );
 	result = p_spi.transfer(0xff);
-	p_spi.setCS(HIGH);
 
+	cs(HIGH);
 	return result;
 }
 
@@ -489,10 +490,12 @@ void RF24::openReadingPipe(uint8_t child, uint64_t address)
 
 void RF24::toggle_features(void)
 {
-	p_spi.setCS(LOW);
+	cs(LOW);
+
 	p_spi.transfer( ACTIVATE );
 	p_spi.transfer( 0x73 );
-	p_spi.setCS(HIGH);
+
+	cs(HIGH);
 }
 
 /****************************************************************************/
@@ -550,15 +553,14 @@ void RF24::writeAckPayload(uint8_t pipe, const void* buf, uint8_t len)
 {
 	const uint8_t* current = reinterpret_cast<const uint8_t*>(buf);
 
-	p_spi.setCS(LOW);
+	cs(LOW);
 
 	p_spi.transfer( W_ACK_PAYLOAD | ( pipe & 0x07 ) );
 	const uint8_t max_payload_size = 32;
 	uint8_t data_len = min(len,max_payload_size);
-	while ( data_len-- )
-		p_spi.transfer(*current++);
+	while ( data_len-- ) p_spi.transfer(*current++);
 
-	p_spi.setCS(HIGH);
+	cs(HIGH);
 }
 
 /****************************************************************************/

@@ -12,12 +12,7 @@
 #include "hw_spi.h"
 #include <avr/io.h>
 
-#ifdef ARDUINO
-	#include "Arduino.h"
-#else
-	#include "pin_to_addr.h"
-	#include "Math.h"
-#endif
+#include "pin_to_addr.h"
 
 #define LSBFIRST 0
 #define MSBFIRST 1
@@ -25,34 +20,18 @@
 
 void HW_SPI::begin() {
 	/*
-	 * Set direction register for SCK and MOSI pin.
-	 * MISO pin automatically overrides to INPUT.
-	 * When the SS pin is set as OUTPUT, it can be used as
-	 * a general purpose output port (it doesn't influence
-	 * SPI operations). If the SS pin ever becomes a LOW INPUT then SPI
-	 * automatically switches to Slave, so the data direction of
-	 * the SS pin MUST be kept as OUTPUT.
+	 * The SS pin MUST be kept as OUTPUT.
+     * If the SS pin becomes a LOW INPUT the SPI will switch to Slave
 	 */
-#ifdef ARDUINO
-	pinMode(p_cspin, OUTPUT);
-	digitalWrite(p_cspin, HIGH);
 
-	pinMode(SCK, OUTPUT);
-	pinMode(MOSI, OUTPUT);
+	set_DDR(SS, OUTPUT);
+	set_PORT(SS, HIGH);
 
-	digitalWrite(SCK, LOW);
-	digitalWrite(MOSI, LOW);
-#else
-	set_DDR(p_cspin, OUT_MODE);
-	set_PORT(p_cspin, STATE_HIGH);
+	set_DDR(SCK, OUTPUT);
+	set_PORT(SCK, LOW);
 
-	set_DDR(SCK, OUT_MODE);
-	set_DDR(MOSI, OUT_MODE);
-
-	set_PORT(SCK, STATE_LOW);
-	set_PORT(MOSI, STATE_LOW);
-#endif
-
+	set_DDR(MOSI, OUTPUT);
+	set_PORT(MOSI, LOW);
 
 	SPCR |= _BV(MSTR)|_BV(SPE);					//Enable SPI in MASTER mode
 }

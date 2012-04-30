@@ -41,10 +41,10 @@ size_t Print::write(const uint8_t *buffer, size_t size)
 
 size_t Print::print(const __FlashStringHelper *ifsh)
 {
-  const prog_char *p = (const prog_char *)ifsh;
+  uint_farptr_t p = (uint_farptr_t) ifsh;
   size_t n = 0;
   while (1) {
-    unsigned char c = pgm_read_byte(p++);
+    unsigned char c = p++;
     if (c == 0) break;
     n += write(c);
   }

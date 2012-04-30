@@ -13,7 +13,7 @@
 class HW_SPI: public SPIClass
 {
 public:
-  HW_SPI(const uint8_t _cspin):SPIClass(_cspin) {begin();};
+  HW_SPI(){};
 
   uint8_t  transfer(const uint8_t  _data);
   void setBitOrder(const uint8_t _bitOrder);

@@ -12,17 +12,13 @@
 #define _SPI_H_INCLUDED
 
 #include <stdio.h>
-#ifdef ARDUINO
-	#include "Arduino.h"
-#else
-	#include "pin_to_addr.h"
-	#define LSBFIRST 0
-	#define MSBFIRST 1
-#endif
+
+#include "pin_to_addr.h"
+#define LSBFIRST 0
+#define MSBFIRST 1
 
 #include <avr/io.h>
 #include <avr/pgmspace.h>
-#include <util/delay.h>
 
 #define SPI_CLOCK_DIV4		0x00
 #define SPI_CLOCK_DIV16		0x01
@@ -43,11 +39,8 @@
 
 class SPIClass
 {
-protected:
-	uint8_t p_cspin;
-
 public:
-  SPIClass(uint8_t _cspin):p_cspin(_cspin){};
+  SPIClass(){};
   virtual uint8_t  transfer(const uint8_t  _data);
   virtual void setBitOrder(const uint8_t _bitOrder);
   virtual void setDataMode(const uint8_t _dataMode);
@@ -55,13 +48,7 @@ public:
 
   virtual void begin();// Default
   virtual void end();
-  void setCS(const uint8_t mode) {
-#ifdef ARDUINO
-	  digitalWrite(p_cspin, mode);
-#else
-	  set_PORT(p_cspin, (port_state_enum) mode);
-#endif
-  	  };
+
 };
 
 #endif

@@ -8,6 +8,8 @@
 #ifndef IODEVICE_H_
 #define IODEVICE_H_
 
+#include <stdint.h>
+
 namespace Devices {
 
 enum INT_KIND { PCINT_0=0 , PCINT_1, PCINT_2};

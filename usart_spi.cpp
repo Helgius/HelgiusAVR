@@ -7,6 +7,7 @@
 
 #include "usart_spi.h"
 #include <avr/io.h>
+#include <HardwareSerial.h>
 
 #ifdef ARDUINO
 	#include "Arduino.h"
@@ -23,23 +24,21 @@
 
 
 void USART_SPI::begin() {
-#ifdef ARDUINO
-	pinMode(p_cspin, OUTPUT);
-	digitalWrite(p_cspin, HIGH);
-#else
-	set_DDR(p_cspin, OUT_MODE);
-	set_PORT(p_cspin, STATE_HIGH);
-#endif
-
-	UCSRA = (volatile uint8_t *) pgm_read_word(UART_UCSRA+UART_module);
 	UBRR(UCSRA)	= 0;							//Disable USART
 
 	//XCK pin output
 	volatile uint8_t* DDR = (volatile uint8_t*) pgm_read_word(UART_SCK_DDR + UART_module);
 	*DDR	|= pgm_read_byte(UART_SCK_MASK + UART_module);
 
-	UCSRC(UCSRA)		= _BV(UMSEL11) | _BV(UMSEL10);	//UCPHAn=0 UCPOLn=0 for mode0
-	UCSRB(UCSRA)		= _BV(TXEN1) | _BV(RXEN1);		//Enable USART
+	UCSRC(UCSRA)		= _BV(UMSEL01) | _BV(UMSEL00);	//UCPHAn=0 UCPOLn=0 for mode0
+	UCSRB(UCSRA)		= _BV(TXEN0) | _BV(RXEN0);		//Enable USART
+
+	Serial.print("DDR:");
+	Serial.println(long(DDR), 10);
+
+	Serial.print("UCSRA:");
+	Serial.println(long(UCSRA), 10);
+
 }
 
 void USART_SPI::setBitOrder(uint8_t bitOrder) {
@@ -60,11 +59,11 @@ void USART_SPI::setClockDivider(uint8_t rate) {
 }
 
 uint8_t USART_SPI::transfer(uint8_t _data) {
-	while (!(*UCSRA & _BV(UDRE1)));// Wait for TX finish
+	while (!(*UCSRA & _BV(UDRE0)));// Wait for TX finish
 
 	UDR(UCSRA) = _data;
 
-	while (!(*UCSRA & _BV(RXC1)))
+	while (!(*UCSRA & _BV(RXC0)))
 		; //Wait for RX finish
 
 	uint8_t dat = UDR(UCSRA);

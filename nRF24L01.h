@@ -48,6 +48,7 @@ class RF24
 private:
   uint64_t pipe0_reading_address; /**< Last address set on pipe 0 for reading. */
   uint8_t ce_pin; /**< "Chip Enable" pin, activates the RX or TX role */
+  uint8_t cs_pin;
   uint8_t irq_pin;
 
   bool wide_band; /* 2Mbs data rate in use? */
@@ -74,7 +75,8 @@ protected:
    * @param level HIGH to actively begin transmission or LOW to put in standby.  Please see data sheet
    * for a much more detailed description of this pin.
    */
-  void ce(int level);
+  void ce(const uint8_t level);
+  void cs(const uint8_t mode);
 
   /**
    * Write a chunk of data to a register
@@ -151,6 +153,17 @@ public:
   /**@{*/
 
   /**
+    * Constructor
+    *
+    * Creates a new instance of this driver.  Before using, you create an instance
+    * and send in the unique pins that this chip is connected to.
+    *
+    * @param _cepin The pin attached to Chip Enable on the RF module
+    * @param _cspin The pin attached to Chip Select
+    */
+   RF24(uint8_t _cepin, uint8_t _cspin, uint8_t _irqpin, SPIClass & _spi);
+
+   /**
      * Read a chunk of data in from a register
      *
      * @param reg Which register. Use constants from nRF24L01.h
@@ -175,18 +188,7 @@ public:
    */
   uint8_t get_status(void);
 
-  /**
-   * Constructor
-   *
-   * Creates a new instance of this driver.  Before using, you create an instance
-   * and send in the unique pins that this chip is connected to.
-   *
-   * @param _cepin The pin attached to Chip Enable on the RF module
-   * @param _cspin The pin attached to Chip Select
-   */
-  RF24(uint8_t _cepin, SPIClass& _spi);
-
-  /**
+   /**
    * Setup SPI speed, data order etc.
    * use it before talking to class when multiple devices on the same bus
    * with different parameters

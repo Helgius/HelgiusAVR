@@ -2,8 +2,6 @@
 #ifndef MATH_H_
 #define MATH_H_
 
-
-#include <stdlib.h>
 #include <stdint.h>
 
 #define min(a,b) ((a)<(b)?(a):(b))

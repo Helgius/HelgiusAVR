@@ -9,6 +9,7 @@
 #define USART_SPI_H_
 
 #include "spi.h"
+#include <avr/io.h>
 
 //Missed USART-MSPI defines
 #define UDORD		2
@@ -48,8 +49,8 @@ private:
 	uint8_t UART_module;
 	volatile uint8_t *UCSRA;
 public:
-	USART_SPI(const enum_spi_module _module, const uint8_t _cspin) :
-			SPIClass(_cspin), UART_module(_module) {
+	USART_SPI(const enum_spi_module _module): UART_module(_module) {
+		UCSRA = (volatile uint8_t *) pgm_read_word(UART_UCSRA+UART_module);
 	};
 	void end();
 

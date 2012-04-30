@@ -4,9 +4,10 @@
  *  Created on: Mar 9, 2012
  *      Author: helgius
  */
-#include "PololuEncoder.h"
 #include <avr/interrupt.h>
+#include <avr/io.h>
 #include "pcint_dispatch.h"
+#include "PololuEncoder.h"
 
 namespace Devices {
 namespace Pololu {

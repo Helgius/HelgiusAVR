@@ -11,12 +11,13 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <util/delay.h>
+#include <stdint.h>
 
 typedef enum {INP_MODE=0, OUT_MODE} io_enum;
 typedef enum {STATE_LOW=0, STATE_HIGH} port_state_enum;
 
-#define LOW (port_state_enum) 0
-#define HIGH (port_state_enum) 1
+#define LOW ((port_state_enum) 0)
+#define HIGH ((port_state_enum) 1)
 
 #define INPUT (io_enum) 0
 #define OUTPUT (io_enum) 1
@@ -81,6 +82,7 @@ const uint8_t PROGMEM PIN_2_MASK[] = {
 		_BV(7), _BV(6), _BV(5), _BV(4), _BV(3), _BV(2), _BV(1), _BV(0)  //PORTF
 	};
 
+#define SS		19
 #define SCK		20
 #define MOSI	21
 #define MISO	22
