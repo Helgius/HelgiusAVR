@@ -4,12 +4,15 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
+../BabyOrangutanMotors.cpp \
+../GlobalTimer.cpp \
 ../HardwareSerial.cpp \
 ../Math.cpp \
 ../PWMMotorDigitalReverse.cpp \
 ../PololuEncoder.cpp \
 ../Print.cpp \
 ../ServoTimer.cpp \
+../Sonar.cpp \
 ../Stream.cpp \
 ../WString.cpp \
 ../cppstub.cpp \
@@ -21,12 +24,15 @@ CPP_SRCS += \
 ../usart_spi.cpp 
 
 OBJS += \
+./BabyOrangutanMotors.o \
+./GlobalTimer.o \
 ./HardwareSerial.o \
 ./Math.o \
 ./PWMMotorDigitalReverse.o \
 ./PololuEncoder.o \
 ./Print.o \
 ./ServoTimer.o \
+./Sonar.o \
 ./Stream.o \
 ./WString.o \
 ./cppstub.o \
@@ -38,12 +44,15 @@ OBJS += \
 ./usart_spi.o 
 
 CPP_DEPS += \
+./BabyOrangutanMotors.d \
+./GlobalTimer.d \
 ./HardwareSerial.d \
 ./Math.d \
 ./PWMMotorDigitalReverse.d \
 ./PololuEncoder.d \
 ./Print.d \
 ./ServoTimer.d \
+./Sonar.d \
 ./Stream.d \
 ./WString.d \
 ./cppstub.d \
@@ -59,7 +68,7 @@ CPP_DEPS += \
 %.o: ../%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: AVR C++ Compiler'
-	avr-g++ -I/usr/avr/include/avr -I../Mega2560core -Wall -g3 -gstabs -Os -fpack-struct -fshort-enums -mrelax -ffunction-sections  -fdata-sections -Wl,--gc-sections -funsigned-char -funsigned-bitfields -fno-exceptions -mmcu=atmega2560 -DF_CPU=16000000UL -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -c -o "$@" "$<"
+	avr-gcc -I/usr/local/avr/avr/include/avr -Wall -g2 -gstabs -O3 -fpack-struct -fshort-enums -funsigned-char -funsigned-bitfields -fno-exceptions -mmcu=atmega328p -DF_CPU=20000000UL -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -c -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

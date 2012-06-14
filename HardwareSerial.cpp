@@ -15,7 +15,7 @@
   You should have received a copy of the GNU Lesser General Public
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-  
+
   Modified 23 November 2006 by David A. Mellis
   Modified 28 September 2010 by Mark Sproul
 */
@@ -27,7 +27,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-// this next line disables the entire HardwareSerial.cpp, 
+// this next line disables the entire HardwareSerial.cpp,
 // this is so I can support Attiny series and any other chip without a uart
 #if defined(UBRRH) || defined(UBRR0H) || defined(UBRR1H) || defined(UBRR2H) || defined(UBRR3H)
 
@@ -172,7 +172,7 @@ ISR(USART_UDRE_vect)
     // There is more data in the output buffer. Send the next byte
     unsigned char c = tx_buffer.buffer[tx_buffer.tail];
     tx_buffer.tail = (tx_buffer.tail + 1) % SERIAL_BUFFER_SIZE;
-	
+
   #if defined(UDR0)
     UDR0 = c;
   #elif defined(UDR)
@@ -196,7 +196,7 @@ ISR(USART1_UDRE_vect)
     // There is more data in the output buffer. Send the next byte
     unsigned char c = tx_buffer1.buffer[tx_buffer1.tail];
     tx_buffer1.tail = (tx_buffer1.tail + 1) % SERIAL_BUFFER_SIZE;
-	
+
     UDR1 = c;
   }
 }
@@ -213,7 +213,7 @@ ISR(USART2_UDRE_vect)
     // There is more data in the output buffer. Send the next byte
     unsigned char c = tx_buffer2.buffer[tx_buffer2.tail];
     tx_buffer2.tail = (tx_buffer2.tail + 1) % SERIAL_BUFFER_SIZE;
-	
+
     UDR2 = c;
   }
 }
@@ -258,7 +258,7 @@ void HardwareSerial::begin(unsigned long baud)
 #endif
 
 try_again:
-  
+
   if (use_u2x) {
     *_ucsra = 1 << _u2x;
     baud_setting = (F_CPU / 4 / baud - 1) / 2;
@@ -266,7 +266,7 @@ try_again:
     *_ucsra = 0;
     baud_setting = (F_CPU / 8 / baud - 1) / 2;
   }
-  
+
   if ((baud_setting > 4095) && use_u2x)
   {
     use_u2x = false;
@@ -293,7 +293,7 @@ void HardwareSerial::end()
   *_ucsrb &= ~_BV(_txen);
   *_ucsrb &= ~_BV(_rxcie);
   *_ucsrb &= ~_BV(_udrie);
-  
+
   // clear any received data
   _rx_buffer->head = _rx_buffer->tail;
 }
@@ -333,18 +333,18 @@ void HardwareSerial::flush()
 size_t HardwareSerial::write(uint8_t c)
 {
   int i = (_tx_buffer->head + 1) % SERIAL_BUFFER_SIZE;
-	
-  // If the output buffer is full, there's nothing for it other than to 
+
+  // If the output buffer is full, there's nothing for it other than to
   // wait for the interrupt handler to empty it a bit
   // ???: return 0 here instead?
   while (i == _tx_buffer->tail)
     ;
-	
+
   _tx_buffer->buffer[_tx_buffer->head] = c;
   _tx_buffer->head = i;
-	
+
   *_ucsrb |= _BV(_udrie);
-  
+
   return 1;
 }
 

@@ -11,6 +11,7 @@
 namespace System {
 
 class GlobalTimer {
+public:
 	static void init();
 };
 

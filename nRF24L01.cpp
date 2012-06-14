@@ -228,6 +228,8 @@ void RF24::begin(void)
 {
 	set_DDR(cs_pin, OUT_MODE);
 	set_DDR(ce_pin, OUT_MODE);
+	set_DDR(irq_pin, INP_MODE);
+
 	cs(HIGH);
 	ce(LOW);
 
@@ -346,6 +348,9 @@ bool RF24::write( const void* buf, uint8_t len )
 		wd++;
 	}
 	while (get_PIN(irq_pin) && ( wd < timeout ) );
+
+	//if (wd<timeout) set_PORT(28, HIGH);
+	//		else set_PORT(28, LOW);
 
 	bool tx_ok, tx_fail;
 	whatHappened(tx_ok,tx_fail,ack_payload_available);

@@ -94,14 +94,13 @@ const uint16_t PROGMEM PIN_2_ADDRESS[] = {
 		(uint16_t) &PIND,
 		(uint16_t) &PIND,
 		0,0,0,0, 														//GND, VCC, GND, VCC
-
 		(uint16_t) &PINB, (uint16_t) &PINB,
 		(uint16_t) &PIND, (uint16_t) &PIND,	(uint16_t) &PIND,
 		(uint16_t) &PINB, (uint16_t) &PINB, (uint16_t) &PINB,
 		(uint16_t) &PINB, (uint16_t) &PINB, (uint16_t) &PINB,
 		0,0,0,0,0,														//AVCC, ADC6, AREF, GND, ADC7
 		(uint16_t) &PINC, (uint16_t) &PINC,	(uint16_t) &PINC, (uint16_t) &PINC,
-		(uint16_t) &PINC, (uint16_t) &PINC,	(uint16_t) &PINC, (uint16_t) &PINC,
+		(uint16_t) &PINC, (uint16_t) &PINC,	(uint16_t) &PINC,
 		(uint16_t) &PIND, (uint16_t) &PIND,	(uint16_t) &PIND
 	};
 
@@ -113,13 +112,14 @@ const uint8_t PROGMEM PIN_2_MASK[] = {
 		_BV(5), _BV(6), _BV(7),											//PORTD
 		_BV(0), _BV(1), _BV(2), _BV(3), _BV(4), _BV(5),					//PORTB
 		0,0,0,0,0,														//AVCC, ADC6, AREF, GND, ADC7
-		_BV(0), _BV(1), _BV(2), _BV(3), _BV(4), _BV(5), _BV(6), _BV(7),	//PORTC
+		_BV(0), _BV(1), _BV(2), _BV(3), _BV(4), _BV(5), _BV(6),			//PORTC
 		_BV(0), _BV(1), _BV(2)											//PORTD
 	};
 
-#define SCK		20
-#define MOSI	21
-#define MISO	22
+#define SS		14
+#define SCK		17
+#define MOSI	15
+#define MISO	16
 
 #endif //ATmega640, ATmega1280, ATmega2560
 

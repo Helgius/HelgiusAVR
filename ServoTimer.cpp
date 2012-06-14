@@ -7,16 +7,13 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include "HardwareSerial.h"
 #include "pin_to_addr.h"
 #include "Math.h"
 #include "ServoTimer.h"
+#include "pin_to_addr.h"
 
-#ifdef ARDUINO
-	#include "Arduino.h"
-#else
-	#include "pin_to_addr.h"
-#endif
+
+namespace Devices {
 
 void ServoTimer::init() {
 	TCCRA = (volatile uint8_t *) pgm_read_word(TIMER_TCCRA+TIMER_module);
@@ -62,3 +59,5 @@ uint16_t ServoTimer::getAngle() const
 {
    return map_l(OCRA, ServoMin, ServoMax, ServoMinAngle, ServoMaxAngle);
 }
+
+}  /* namespace Devices */

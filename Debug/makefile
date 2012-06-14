@@ -64,7 +64,7 @@ libHelgiusAVR.a: $(OBJS)
 
 libHelgiusAVR.lss: libHelgiusAVR.a
 	@echo 'Invoking: AVR Create Extended Listing'
-	-avr-objdump -h -S -g libHelgiusAVR.a  >"libHelgiusAVR.lss"
+	-avr-objdump -h -S libHelgiusAVR.a  >"libHelgiusAVR.lss"
 	@echo 'Finished building: $@'
 	@echo ' '
 

@@ -60,7 +60,7 @@ void BabyOrangutanMotors::init() {
     set_PORT(9, LOW);
 
 	set_DDR(15, OUTPUT); //PWM2A B3
-    set_PORT(10, LOW);
+    set_PORT(15, LOW);
 
 	set_DDR(1, OUTPUT); //PWM2B D3
     set_PORT(1, LOW);

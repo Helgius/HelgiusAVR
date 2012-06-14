@@ -7,7 +7,6 @@
 
 #include "usart_spi.h"
 #include <avr/io.h>
-#include <HardwareSerial.h>
 
 #ifdef ARDUINO
 	#include "Arduino.h"
@@ -26,19 +25,11 @@
 void USART_SPI::begin() {
 	UBRR(UCSRA)	= 0;							//Disable USART
 
-	//XCK pin output
 	volatile uint8_t* DDR = (volatile uint8_t*) pgm_read_word(UART_SCK_DDR + UART_module);
-	*DDR	|= pgm_read_byte(UART_SCK_MASK + UART_module);
+	*DDR	|= pgm_read_byte(UART_SCK_MASK + UART_module); //set XCK PIN mode to OUTPUT
 
 	UCSRC(UCSRA)		= _BV(UMSEL01) | _BV(UMSEL00);	//UCPHAn=0 UCPOLn=0 for mode0
 	UCSRB(UCSRA)		= _BV(TXEN0) | _BV(RXEN0);		//Enable USART
-
-	Serial.print("DDR:");
-	Serial.println(long(DDR), 10);
-
-	Serial.print("UCSRA:");
-	Serial.println(long(UCSRA), 10);
-
 }
 
 void USART_SPI::setBitOrder(uint8_t bitOrder) {

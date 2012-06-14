@@ -11,6 +11,8 @@
 
 #include <avr/io.h>
 
+namespace Devices {
+
 enum angle_kind_t {MAX_ANGLE, MIN_ANGLE, CURRENT};
 
 #define	ICR		(*(volatile uint16_t *)(TCCRA+6))
@@ -67,5 +69,5 @@ private:
     uint8_t TIMER_module;
     volatile uint8_t *TCCRA;
 };
-
+}  /* namespace Devices */
 #endif /* SERVOTIMER_H_ */
