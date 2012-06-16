@@ -53,10 +53,10 @@ const uint8_t PCINTDispatcher::attachInterrupt(int8_t _handler, uint8_t PCINT_nu
 		tmp_idx	=	p_h_used++;
 	}
 
-	p_handlers[tmp_idx].pin_mask[PCINT_num/8]	=	_BV(PCINT_num%8);
+	p_handlers[tmp_idx].pin_mask[PCINT_num/8]	|=	_BV(PCINT_num%8);
 	*(&PCMSK0 + PCINT_num/8) |=	_BV(PCINT_num%8);
 
-	//set_PCINT_Pin_InputDir(PCINT_num);
+	set_PCINT_Pin_InputDir(PCINT_num);
 
 
 	p_handlers[tmp_idx].device		=	device;
@@ -91,8 +91,9 @@ void PCINTDispatcher::PCINT_vector(uint8_t pin_block)
 	uint8_t tmp_mask	=	tmp_pin_val^p_last_pin_val[pin_block];
 
 	for (uint8_t i=0; i<p_h_used; i++) {
-		if (p_handlers[i].pin_mask[pin_block] & tmp_mask) {
-			p_handlers[i].device->PCINT((Devices::INT_KIND)pin_block, tmp_pin_val);
+		uint8_t handler_mask = p_handlers[i].pin_mask[pin_block];
+		if (handler_mask & tmp_mask) {
+			p_handlers[i].device->PCINT((Devices::INT_KIND)pin_block, tmp_pin_val & handler_mask);
 		}
 	}
 

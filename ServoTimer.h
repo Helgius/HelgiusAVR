@@ -15,9 +15,10 @@ namespace Devices {
 
 enum angle_kind_t {MAX_ANGLE, MIN_ANGLE, CURRENT};
 
-#define	ICR		(*(volatile uint16_t *)(TCCRA+6))
-#define	OCRA	(*(volatile uint16_t *)(TCCRA+8))
-#define TCCRB	(*(volatile uint8_t *)(TCCRA+1))
+#define	ICR		(*(volatile uint16_t *)(TCCR+6))
+#define	OCR		(*(volatile uint16_t *)(TCCR+6+channel*2))
+#define TCCRA	(*(volatile uint8_t *)(TCCR))
+#define TCCRB	(*(volatile uint8_t *)(TCCR+1))
 
 #if defined (__AVR_ATmega640__) || defined (__AVR_ATmega1280__) || defined (__AVR_ATmega2560__)
 
@@ -45,10 +46,9 @@ const uint16_t PROGMEM TIMER_TCCRA[] = { (uint16_t) &TCCR1A };
 
 class ServoTimer {
 public:
-	ServoTimer(const enum_timer_module _module, uint8_t _channel_mask): ServoMin(2200), ServoMax(4715), ServoMinAngle(0), ServoMaxAngle(180), channel_mask(_channel_mask), TIMER_module(_module)
-	{
-		init();
-	};
+	ServoTimer(const enum_timer_module _module, uint8_t _channel):
+		ServoMin(2200), ServoMax(4715), ServoMinAngle(0), ServoMaxAngle(180),
+		channel(_channel), TIMER_module(_module) {};
 
 	~ServoTimer();
 
@@ -58,16 +58,16 @@ public:
     uint16_t ServoMaxAngle;
 
 	uint16_t getPosition();
-    void setPosition(uint16_t position);
+    void setAngle(const int16_t position);
     void init();
 
-    uint16_t getAngle() const;
-
+    int16_t getAngle() const;
+    uint8_t *TCCR;
 private:
 
-    uint8_t channel_mask;
+    uint8_t channel;
     uint8_t TIMER_module;
-    volatile uint8_t *TCCRA;
+
 };
 }  /* namespace Devices */
 #endif /* SERVOTIMER_H_ */

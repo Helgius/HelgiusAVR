@@ -8,7 +8,12 @@
 #ifndef GLOBALTIMER_H_
 #define GLOBALTIMER_H_
 
+#include <inttypes.h>
+
 namespace System {
+
+extern volatile uint64_t system_millis;
+extern volatile uint32_t system_micros;
 
 class GlobalTimer {
 public:

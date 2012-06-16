@@ -38,12 +38,12 @@ void PololuEncoder::PCINT(INT_KIND int_kind, uint8_t pin_data) {
 }
 
 void PololuEncoder::init() {
-	cli();
-
 	gl_m1_count = 0;
 	gl_m2_count = 0;
 
 	gl_m_status = get_encoder_val();
+
+	cli();
 
 	PCINT_Handler = PCINT_dispatcher.attachInterrupt(PCINT_Handler, 0, this);
 	PCINT_Handler = PCINT_dispatcher.attachInterrupt(PCINT_Handler, 1, this);

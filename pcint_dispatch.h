@@ -24,20 +24,19 @@
 #define MAX_PCINT_HANDLERS 3
 
 #ifdef _AVR_IOMXX0_1_H_
-#define set_PCINT_Pin_InputDir	(switch (PCINT_num/8) {\
+#define set_PCINT_Pin_InputDir(PCINT_num)	switch ((PCINT_num)/8) {\
 													case 0: {DDRB |= _BV(PCINT_num%8); break;}\
 													case 1: {DDRJ |= (_BV(PCINT_num%8) & 0x7F); DDRE |= (_BV(PCINT_num%8) & 0x01); break;}\
 													case 2: {DDRK |= _BV(PCINT_num%8); break;}\
-													}\
-											)
+													}
 #elif defined (__AVR_ATmega328P__) || defined (__AVR_ATmega328__)
-//TODO: Check Ports/Pins
-#define set_PCINT_Pin_InputDir	(switch (PCINT_num/8) {\
+
+#define set_PCINT_Pin_InputDir(PCINT_num)	switch ((PCINT_num)/8) {\
 												case 0: {DDRB |= _BV(PCINT_num%8); break;}\
 												case 1: {DDRC |= _BV(PCINT_num%8); break;}\
-												case 2: {DDRB |= _BV(PCINT_num%8); break;}\
-												}\
-											)
+												case 2: {DDRD |= _BV(PCINT_num%8); break;}\
+												}
+
 #endif
 
 class PCINTDispatcher {

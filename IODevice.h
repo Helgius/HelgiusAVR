@@ -16,10 +16,9 @@ enum INT_KIND { PCINT_0=0 , PCINT_1, PCINT_2};
 
 class IODevice {
 protected:
-//TODO: Check this declaration
-	uint8_t PCINT_Handler;
+	int8_t PCINT_Handler;
 public:
-	IODevice(){};
+	IODevice():PCINT_Handler(-1){};
 
 	virtual void PCINT(INT_KIND int_kind, uint8_t pin_data);
 };

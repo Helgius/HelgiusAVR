@@ -349,9 +349,6 @@ bool RF24::write( const void* buf, uint8_t len )
 	}
 	while (get_PIN(irq_pin) && ( wd < timeout ) );
 
-	//if (wd<timeout) set_PORT(28, HIGH);
-	//		else set_PORT(28, LOW);
-
 	bool tx_ok, tx_fail;
 	whatHappened(tx_ok,tx_fail,ack_payload_available);
 
